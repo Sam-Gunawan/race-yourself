@@ -1,0 +1,35 @@
+Ultrasonic Sensor (HC-SR04):
+- VCC > 5V
+- Trigger > PE4
+- Echo > PE5
+- Gnd > Ground
+
+POT:
+- VCC > 5V
+- SIG >V0 (LCD)
+- GND > Ground
+
+LCD:
+- VSS > Ground
+- VDD > 5V
+- V0 > SIG (POT)
+- RS > PB6
+- RW > Ground
+- E > PB4
+- D4 > PA0
+- D5 > PA1
+- D6 > PA2
+- D7 > PA3
+- A > 5V
+- K > Ground
+
+LED Strip (WS2812B):
+- VCC > 5V
+- DATA > PG5
+- GND > Ground
+
+Button:
+- PB3
+
+Buzzer:
+- PH4

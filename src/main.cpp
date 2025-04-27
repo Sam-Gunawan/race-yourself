@@ -1,87 +1,96 @@
-#include <FastLED.h>
+// Author: Samuel Theodore Gunawan, Jorel Alexander Setiabudi, Evan Aditya Chandra, Calvin Willyanto, Ignatius Timothy Bonario Simbolon
+// SU ID: 2022390010
+// Date: ...
+// Microprossesor Final Project: "Race Yourself"
 
-// Define the number of LEDs and the data pin
-#define NUM_LEDS 144
-#define DATA_PIN 16
+#include <Arduino.h>
+#include <avr/io.h>
+#include <string.h>
+#include "timer.h"
+#include "switch.h"
+#include "lcd.h"
 
-// Create an array to hold the LED data
-CRGB leds[NUM_LEDS];
+// TODO: TO BE IMPLEMENTED
+#include "led.h" 
+#include "ultrasonic.h"
+#include "buzzer.h"
 
-void setup() {
-    // Initialize the LED strip
-    FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
-    FastLED.clear(); // Clear all LEDs
-    FastLED.show();  // Ensure LEDs are off initially
-}
+typedef enum {
+    WAIT_PRESS,
+    DB_PRESS,
+    WAIT_RELEASE,
+    DB_RELEASE
+} state;
 
-void loop() {
-    static uint8_t hue = 0; // Starting hue value
+volatile state buttonState = WAIT_PRESS;
 
-    // Create a rainbow chase effect
-    for (int i = 0; i < NUM_LEDS; i++) {
-        leds[i] = CHSV((hue + i * 10) % 255, 255, 255); // Set color based on hue
-    }
-    FastLED.show(); // Update the LED strip
-    hue++;          // Increment the hue for the next frame
-    delay(50);      // Small delay for smooth animation
-}
+/*
+ * Function to initialize all the components
+ * For easier debugging and readability, we decided to separate all the init functions
+ */ 
+void initEverything() {
+    initTimer1();
+    initTimer0();
+    initSwitchPB3();
+    initLCD();
 
+    // TODO: INIT ULTRASONIC, LED STRIP, BUZZER
 
-
-// Define pins for the ultrasonic sensor
-#define TRIG_PIN 9
-#define ECHO_PIN 10
-
-void setupUltrasonicSensor() {
-    pinMode(TRIG_PIN, OUTPUT);
-    pinMode(ECHO_PIN, INPUT);
-}
-
-long readUltrasonicDistance() {
-    // Send a 10-microsecond pulse to trigger pin
-    digitalWrite(TRIG_PIN, LOW);
-    delayMicroseconds(2);
-    digitalWrite(TRIG_PIN, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(TRIG_PIN, LOW);
-
-    // Read the echo pin and calculate distance
-    long duration = pulseIn(ECHO_PIN, HIGH, 30000); // Timeout after 30ms
-    if (duration == 0) {
-        return -1; // Return -1 if no echo is received
-    }
-    long distance = duration * 0.034 / 2; // Convert to centimeters
-    return distance;
-}
-
-void setup() {
-    // Initialize the LED strip
-    FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
-    FastLED.clear(); // Clear all LEDs
-    FastLED.show();  // Ensure LEDs are off initially
-
-    // Initialize ultrasonic sensor and serial communication
-    setupUltrasonicSensor();
     Serial.begin(9600);
+    sei(); // Enable global interrupts
 }
 
-void loop() {
-    static uint8_t hue = 0; // Starting hue value
+/*
+ * Function for default display of LCD
+ */
+void defaultDisplay() {
+    // Clears the display
+    moveCursor(0, 1);                      // Moves the cursor to (0, 1) position (first line)
+    writeString("                ");
+    moveCursor(0, 0);                      // Moves the cursor to (0, 0) position (second line)
+    writeString("                ");
 
-    // Create a rainbow chase effect
-    for (int i = 0; i < NUM_LEDS; i++) {
-        leds[i] = CHSV((hue + i * 10) % 255, 255, 255); // Set color based on hue
-    }
-    FastLED.show(); // Update the LED strip
-    hue++;          // Increment the hue for the next frame
-    long distance = readUltrasonicDistance(); // Read distance from the sensor
-    if (distance == -1) {
-        Serial.println("Distance: Out of range");
-    } else {
-        Serial.print("Distance: ");
-        Serial.print(distance);
-        Serial.println(" cm");
-    }
-
-    delay(50); // Small delay for smooth animation and sensor reading
+    // Idle display (waiting for track to start)
+    moveCursor(0, 1);                      // First line
+    writeString("Race Yourself");
+    moveCursor(0, 0);                      // Second line
+    writeString("Idle...");
 }
+
+void main() {
+    initEverything();
+    defaultDisplay();
+
+    while (1) {
+        // TODO: LED ANIMATION WHILE IDLE
+    }
+}
+
+ISR(PCINT0_vect) {
+    switch (buttonState) {
+        case WAIT_PRESS:
+            delayMs(30);
+            buttonState = DB_PRESS;
+  
+        case DB_PRESS:
+            delayMs(30);                        // Debounce delay
+            cli();                              // Temporarily disables global interrupt to prevent multiple button press while countdown is ongoing.
+            Serial.println("start button triggered");
+        
+            // TODO: START COUNTDOWN, BEGIN TRACKING
+
+            buttonState = WAIT_RELEASE;         // Move to the next state after debouncing
+            sei();                              // Re-activates global interrupts after finished
+  
+        case WAIT_RELEASE:
+            delayMs(30);
+            buttonState = DB_RELEASE;
+        
+        case DB_RELEASE:
+            delayMs(30);
+            buttonState = WAIT_PRESS;           // Return to initial state
+    
+        default:
+            break;
+    }
+  }

@@ -37,15 +37,16 @@ void delayMs(unsigned int delay){
     }
 }
 
-/* Initialize timer 0. Use CTC mode  .*/
+/* Initialize timer 0. Use normal mode  .*/
 void initTimer0(){
-    // set to CTC mode
+    // Set to normal mode
     TCCR0A &= ~(1 << WGM00);
-    TCCR0A |= (1 << WGM11);
+    TCCR0A &= ~(1 << WGM11);
     TCCR0B &= ~(1 << WGM22);
 
-    // set prescalar to 64
-    TCCR0B |= (1 << CS01) | (1 << CS00);
+    // Set prescalar to 8
+    TCCR0B &= ~(1 << CS00);
+    TCCR0B |= (1 << CS01);
     TCCR0B &= ~(1 << CS02);
 }
 
@@ -62,6 +63,13 @@ unsigned long microsSinceStart() {
     // Re-enable interrupts
     sei();
 
-    // Timer0 ticks every 4 clock cycles (prescaler = 64, 16MHz / 64 = 250kHz, 1 tick = 1 / 250kHz = 4 us)
-    return time / 4;  // In this case we divide by 4 to get the time per 1 microsecond
+    // Timer0 ticks every 500 nanoseconds (prescaler = 8, 16MHz / 8 = 2MHz, 1 tick = 1 / 2MHz = 500 ns)
+    return time / 2;  // In this case we divide by 2 t0 get the time per 1 microsecond
+    
+    /*
+     * E.g. if TCNT0 (or time) = 100 ticks
+     * This means that 100 * 500 ns = 50 us has passed.
+     * Thus, 100 ticks = 50 us, 100/50 ticks = 1 us, 2 ticks = 1 us.
+     * So to get the time in us units, time = amount of ticks / 2.
+     */
 }

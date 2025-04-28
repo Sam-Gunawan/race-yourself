@@ -1,5 +1,5 @@
 // Author: Samuel Theodore Gunawan, Jorel Alexander Setiabudi, Evan Aditya Chandra, Calvin Willyanto, Ignatius Timothy Bonario Simbolon
-// SU ID: 2022390010
+// SU ID: 2022390010, 2022390016, 2022390002, 2022390009, 2022390013
 // Date: ...
 // Microprossesor Final Project: "Race Yourself"
 
@@ -45,19 +45,19 @@ void initEverything() {
  */
 void defaultDisplay() {
     // Clears the display
-    moveCursor(0, 1);                      // Moves the cursor to (0, 1) position (first line)
+    moveCursor(0, 0);                      // Moves the cursor to (0, 0) position (first line)
     writeString("                ");
-    moveCursor(0, 0);                      // Moves the cursor to (0, 0) position (second line)
+    moveCursor(0, 1);                      // Moves the cursor to (0, 1) position (second line)
     writeString("                ");
 
     // Idle display (waiting for track to start)
-    moveCursor(0, 1);                      // First line
+    moveCursor(0, 0);                      // First line
     writeString("Race Yourself");
-    moveCursor(0, 0);                      // Second line
+    moveCursor(0, 1);                      // Second line
     writeString("Idle...");
 }
 
-void main() {
+int main() {
     initEverything();
     defaultDisplay();
 

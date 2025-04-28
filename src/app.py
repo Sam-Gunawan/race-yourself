@@ -11,7 +11,7 @@ import serial
 import threading
 
 KV = '''
-<SpeedTracker>:
+<RaceYourself>:
     orientation: 'vertical'
     padding: dp(20)
     spacing: dp(10)
@@ -101,7 +101,7 @@ class SpeedGauge(Widget):
             Ellipse(pos=(cx - 5, cy - 5), size=(10, 10))
 
 
-class SpeedTracker(BoxLayout):
+class RaceYourself(BoxLayout):
     distance_m = NumericProperty(1.5)
     current_speed = NumericProperty(0)
     top_speed = NumericProperty(0)
@@ -158,7 +158,8 @@ class SpeedTracker(BoxLayout):
 class SpeedApp(App):
     def build(self):
         Builder.load_string(KV)
-        return SpeedTracker()
+        self.title = "Race Yourself"
+        return RaceYourself()
 
 
 if __name__ == '__main__':

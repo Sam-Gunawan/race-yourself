@@ -9,6 +9,7 @@ void eightBitCommandWithDelay(unsigned char command, unsigned int delay);
 void writeCharacter(unsigned char character);
 void writeString(const char *string);
 void moveCursor(unsigned char x, unsigned char y);
+void clearDisplay();
 void initLCDPins();
 void initLCDProcedure();
 

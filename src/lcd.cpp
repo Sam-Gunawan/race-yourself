@@ -159,6 +159,12 @@ void moveCursor(unsigned char x, unsigned char y){
   eightBitCommandWithDelay(0x80 | address, 53);
 }
 
+void clearDisplay(){
+  // Clear display command
+  eightBitCommandWithDelay(0x01, 1000);
+  // Move cursor to home position
+  moveCursor(0, 0);
+}
 
 /* This is the procedure outline on the LCD datasheet page 4 out of 9.
  * This should be the last function you write as it largely depends on all other

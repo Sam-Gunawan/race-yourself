@@ -7,9 +7,9 @@
 
 
 // Initializes the ultrasonic sensor.
-void ultrasonic_init();
+void initUltrasonic();
 
 // Measures and returns the distance in centimeters using the ultrasonic sensor.
-uint16_t measure_distance_cm(int number);
+uint16_t measureDistanceCm(int number);
 
 #endif  

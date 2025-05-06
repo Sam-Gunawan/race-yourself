@@ -12,14 +12,14 @@
 #define ECHO_PIN2  PE1  // Digital Pin 
 
 // ==== HC-SR04 Setup ====
-void ultrasonic_init() {
+void initUltrasonic() {
     DDRE |= (1 << TRIG_PIN1);    // TRIG as output
     DDRE &= ~(1 << ECHO_PIN1);   // ECHO as input
     DDRE |= (1 << TRIG_PIN2);    // TRIG as output for the 2nd sensor
     DDRE &= ~(1 << ECHO_PIN2); 
 }
 
-uint16_t measure_distance_cm(int number) {
+uint16_t measureDistanceCm(int number) {
     uint32_t count = 0;
     uint8_t TRIG_PIN;
     uint8_t ECHO_PIN;

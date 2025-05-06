@@ -29,6 +29,14 @@ typedef enum {
 } state;
 
 volatile state buttonState = WAIT_PRESS;
+volatile bool raceFinished = false;
+volatile bool isValid = true;
+volatile unsigned int startTime;
+volatile unsigned int finishTime;
+volatile unsigned int raceDuration;
+
+int INDEX_LEDS = 0;
+
 
 
 /*
@@ -43,7 +51,7 @@ void initEverything() {
     initLED();
     setupPWM();
     initIR();
-    UART_init(103);         // 16MHz, 9600 baud
+    // UART_init(103);         // 16MHz, 9600 baud
     initUltrasonic();
 
     Serial.begin(9600);
@@ -62,12 +70,19 @@ void defaultDisplay() {
     writeString("Idle...");
 }
 
-
+void standby() {
+    defaultDisplay();
+    while(1){
+        for (int i=0; i < 144; i++) {
+            sendColor(0x01, 0x01, 0x00);
+        }
+    }
+}
 
 
 int main() {
     initEverything();
-    defaultDisplay();
+    standby();
 
     //char buf[32];
 
@@ -101,7 +116,7 @@ int main() {
         /* TRY THIS FOR LED (SHOULD HAVE A CHASE ANIMATION LIKE ABOVE^) */
         // for (int j = 0; j < NUM_LEDS; j++) {
         //     lightLEDs(3, 4, j); // Light up 4 LEDs in cyan color
-        //     delayMs(500); // Delay for 100ms
+        //     delayMs(1); // Delay for 100ms
         // }  
 
 
@@ -124,6 +139,24 @@ int main() {
     return 0;
 }
 
+// void ir_detect(){
+//     int tim = 0;
+//     for (int i = 0; i < 10; i++)
+//     {
+//         if (IRSensorRead(1) == 1){
+//             Serial.println("bad, not detected");
+//             break;
+//         }
+//         if (i >=1499){
+//             tim = i;
+//         }
+//         delayMs(2);
+//     }
+//     if (tim >= 1499) {
+//         Serial.println("Good");
+//     }
+// }
+
 ISR(PCINT0_vect) {
     switch (buttonState) {
         case WAIT_PRESS:
@@ -136,9 +169,53 @@ ISR(PCINT0_vect) {
             cli();
             Serial.println("start button triggered");
             
-            buzzer_main();
             StartCountdown(); // ✅ Trigger countdown and “GO !!!”
+            // for (int i = 0; i < NUM_LEDS; i++) {
+            //     sendColor(0x01, 0x00, 0x00);
+            // }
 
+            if (IRSensorRead(1) == 1) {
+                for (int i = 0; i < NUM_LEDS; i++) {
+                    sendColor(0x01, 0x00, 0x01);
+                }
+                delayMs(2000);
+                buzzer_main();
+            }
+
+            if (isValid) {
+                startTime = microsSinceStart();
+
+                while(!raceFinished) {
+                    // char buf[32];
+                    //UART_SendString(buf);
+            
+                    uint16_t dist = measureDistanceCm(1);
+                    // snprintf(buf, sizeof(buf), "Distance: %u cm\r\n", dist);
+                    INDEX_LEDS = dist * 2.5;
+
+                    for (int i=0; i < 144; i++) {
+                        if (i > INDEX_LEDS - 6 && i < INDEX_LEDS) {
+                            sendColor(0x01, 0x01, 0x00); // Green
+                        } else {
+                            sendColor(0x00, 0x00, 0x00); // Green
+                        }
+                    }
+                    delayMs(1);
+                }
+
+                for (int blink = 0; blink < 3; blink++) {
+                    for (int i = 0; i < NUM_LEDS; i++) {
+                        sendColor(0x00, 0x01, 0x00);
+                    }
+                    delayMs(500);
+                }
+
+                raceDuration = finishTime - startTime;
+
+                Serial.print("Race time: ");
+                Serial.println(raceDuration);
+            }
+            
             buttonState = WAIT_RELEASE;
             sei();
             break;
@@ -158,4 +235,11 @@ ISR(PCINT0_vect) {
     }
 }
 
-
+// ISR(PCINT2_vect) {
+//     if (!(PINK & (1 << PK2))) {
+//         // Serial.println("3");
+//         finishTime = microsSinceStart();
+//         raceFinished = true;
+//     }
+//     delayMs(10);
+// }

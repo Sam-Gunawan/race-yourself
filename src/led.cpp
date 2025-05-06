@@ -8,7 +8,7 @@
 // Pin connected to DIN of WS2812B
 #define LED_PORT PORTB
 #define LED_DDR  DDRB
-#define LED_PIN  PB0
+#define LED_PIN  PB4
 #define NUM_LEDS 144
 
 void initLED() {
@@ -16,32 +16,28 @@ void initLED() {
     LED_PORT &= ~(1 << LED_PIN); // Set pin low
 }
 
-void nopDelay(uint8_t n) {
-    while(n--) {
-        asm volatile ("nop\n\t");
-    }
-}
+// void nopDelay(uint8_t n) {
+//     while(n--) {
+//         asm volatile ("nop\n\t");
+//     }
+// }
 
 void sendBit(uint8_t bitVal) {
     if (bitVal) {
         // Send '1' bit
         LED_PORT |= (1 << LED_PIN);       // High
-        // asm volatile ("nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t");
-        nopDelay(12);
+        __asm__ __volatile__ ("nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t");
         LED_PORT &= ~(1 << LED_PIN);      // Low
-        // asm volatile ("nop\n\t""nop\n\t""nop\n\t");
-        nopDelay(3);
+        __asm__ __volatile__ ("nop\n\t""nop\n\t""nop\n\t");
     } else {
         // Send '0' bit
         LED_PORT |= (1 << LED_PIN);       // High
-        // asm volatile ("nop\n\t""nop\n\t""nop\n\t");
-        nopDelay(3);
+        __asm__ __volatile__ ("nop\n\t""nop\n\t""nop\n\t");
         LED_PORT &= ~(1 << LED_PIN);      // Low
-        // asm volatile (
-        //     "nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t"
-        //     "nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t"
-        // );
-        nopDelay(11);
+        __asm__ __volatile__ (
+            "nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t"
+            "nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t""nop\n\t"
+        );
     }
 }
 
@@ -74,29 +70,40 @@ void sendColor(uint8_t r, uint8_t g, uint8_t b) {
  * @param width - Number of LEDs to light up (default: NUM_LEDS, light everything up)
  * @param start - Starting index of the LEDs to light up (default: 1)
  */
-// void lightLEDs(int color=0, int width=NUM_LEDS, int start=1) {
-//     int LEDs[NUM_LEDS][3] = { {0, 0, 0} }; // Initialize all LEDs to off (black)
-    
-//     for (int i = start - 1; i <= width; i++) {
-//         try {
-//             switch(color) {
-//                 case 0: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x00; break; // Black
-//                 case 1: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x01; break; // Blue
-//                 case 2: LEDs[i][0] = 0x00; LEDs[i][1] = 0x01; LEDs[i][2] = 0x00; break; // Green
-//                 case 3: LEDs[i][0] = 0x00; LEDs[i][1] = 0x01; LEDs[i][2] = 0x01; break; // Cyan
-//                 case 4: LEDs[i][0] = 0x01; LEDs[i][1] = 0x00; LEDs[i][2] = 0x00; break; // Red
-//                 case 5: LEDs[i][0] = 0x01; LEDs[i][1] = 0x00; LEDs[i][2] = 0x01; break; // Magenta
-//                 case 6: LEDs[i][0] = 0x01; LEDs[i][1] = 0x01; LEDs[i][2] = 0x00; break; // Yellow
-//                 case 7: LEDs[i][0] = 0x01; LEDs[i][1] = 0x01; LEDs[i][2] = 0x01; break; // White
-//             }
-//         } catch (...) {
-//             // Handle the exception if the index is out of range
-//             // If out of range, just break the loop
-//             break;
-//         }
-//     }
+void lightLEDs(int color=0, int width=NUM_LEDS, int start=1) {
+    int LEDs[NUM_LEDS][3] = { {0, 0, 0} }; // Initialize all LEDs to off (black)
 
-//     for (int i = 0; i < NUM_LEDS; i++) {
-//         sendColor(LEDs[i][0], LEDs[i][1], LEDs[i][2]);
-//     }
-// }
+    int startIndex = start - 1;
+    int endIndex = startIndex + width;
+
+    // Clamp to valid LED range
+    if (startIndex < 0) startIndex = 0;
+    if (endIndex > NUM_LEDS) endIndex = NUM_LEDS;
+
+    uint8_t r = 0, g = 0, b = 0;
+
+    switch(color) {
+        case 0: r = 0x00; g = 0x00; b = 0x00; break; // Off
+        case 1: r = 0x00; g = 0x00; b = 0x10; break; // Blue
+        case 2: r = 0x00; g = 0x10; b = 0x00; break; // Green
+        case 3: r = 0x00; g = 0x10; b = 0x10; break; // Cyan
+        case 4: r = 0x10; g = 0x00; b = 0x00; break; // Red
+        case 5: r = 0x10; g = 0x00; b = 0x10; break; // Magenta
+        case 6: r = 0x10; g = 0x10; b = 0x00; break; // Yellow
+        case 7: r = 0x10; g = 0x10; b = 0x10; break; // White
+        default: r = 0x00; g = 0x00; b = 0x00; break;
+    }
+
+    for (int i = startIndex; i < endIndex; i++) {
+        LEDs[i][0] = g;
+        LEDs[i][1] = r;
+        LEDs[i][2] = b;
+    }
+
+    // Send data to LEDs
+    for (int i = 0; i < NUM_LEDS; i++) {
+        sendColor(LEDs[i][0], LEDs[i][1], LEDs[i][2]);
+    }
+
+    delayMs(1); // Small delay to allow latch
+}

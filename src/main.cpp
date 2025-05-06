@@ -11,10 +11,13 @@
 #include "lcd.h"
 #include "infrared.h"
 #include "ultrasonic.h"
+#include "matrix.h"
+#include "buzzer.h"
+
 
 // TODO: TO BE IMPLEMENTED
 #include "led.h" 
-#include "buzzer.h"
+
 
 #define NUM_LEDS 144     // Number of LEDs on the strip
 
@@ -38,6 +41,7 @@ void initEverything() {
     initSwitchPB3();
     initLCD();
     initLED();
+    setupPWM();
     initIR();
     UART_init(103);         // 16MHz, 9600 baud
     initUltrasonic();
@@ -58,13 +62,17 @@ void defaultDisplay() {
     writeString("Idle...");
 }
 
+
+
+
 int main() {
     initEverything();
     defaultDisplay();
 
-    char buf[32];
+    //char buf[32];
 
     while (1) {
+        
 
         /* THIS IS FOR ULTRASONIC MEASURING AND PRINTING TO TERMINAL */
         // uint16_t dist = measureDistanceCm();
@@ -112,6 +120,8 @@ int main() {
         //     delayMs(500); // Delay for 100ms
         // }
     }
+
+    return 0;
 }
 
 ISR(PCINT0_vect) {
@@ -119,26 +129,33 @@ ISR(PCINT0_vect) {
         case WAIT_PRESS:
             delayMs(30);
             buttonState = DB_PRESS;
-  
-        case DB_PRESS:
-            delayMs(30);                        // Debounce delay
-            cli();                              // Temporarily disables global interrupt to prevent multiple button press while countdown is ongoing.
-            Serial.println("start button triggered");
-        
-            // TODO: START COUNTDOWN, BEGIN TRACKING
+            break;
 
-            buttonState = WAIT_RELEASE;         // Move to the next state after debouncing
-            sei();                              // Re-activates global interrupts after finished
-  
+        case DB_PRESS:
+            delayMs(30);
+            cli();
+            Serial.println("start button triggered");
+            
+            buzzer_main();
+            StartCountdown(); // ✅ Trigger countdown and “GO !!!”
+
+            buttonState = WAIT_RELEASE;
+            sei();
+            break;
+
         case WAIT_RELEASE:
             delayMs(30);
             buttonState = DB_RELEASE;
-        
+            break;
+
         case DB_RELEASE:
             delayMs(30);
-            buttonState = WAIT_PRESS;           // Return to initial state
-    
+            buttonState = WAIT_PRESS;
+            break;
+
         default:
             break;
     }
-  }
+}
+
+

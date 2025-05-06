@@ -1,7 +1,7 @@
 #ifndef ULTRASONIC_H
 #define ULTRASONIC_H
 
-#define F_CPU 16000000UL
+//#define F_CPU 16000000UL
 #include <avr/io.h>
 #include <stdio.h>
 

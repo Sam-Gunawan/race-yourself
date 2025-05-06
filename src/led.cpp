@@ -74,29 +74,29 @@ void sendColor(uint8_t r, uint8_t g, uint8_t b) {
  * @param width - Number of LEDs to light up (default: NUM_LEDS, light everything up)
  * @param start - Starting index of the LEDs to light up (default: 1)
  */
-void lightLEDs(int color=0, int width=NUM_LEDS, int start=1) {
-    int LEDs[NUM_LEDS][3] = { {0, 0, 0} }; // Initialize all LEDs to off (black)
+// void lightLEDs(int color=0, int width=NUM_LEDS, int start=1) {
+//     int LEDs[NUM_LEDS][3] = { {0, 0, 0} }; // Initialize all LEDs to off (black)
     
-    for (int i = start - 1; i <= width; i++) {
-        try {
-            switch(color) {
-                case 0: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x00; break; // Black
-                case 1: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x01; break; // Blue
-                case 2: LEDs[i][0] = 0x00; LEDs[i][1] = 0x01; LEDs[i][2] = 0x00; break; // Green
-                case 3: LEDs[i][0] = 0x00; LEDs[i][1] = 0x01; LEDs[i][2] = 0x01; break; // Cyan
-                case 4: LEDs[i][0] = 0x01; LEDs[i][1] = 0x00; LEDs[i][2] = 0x00; break; // Red
-                case 5: LEDs[i][0] = 0x01; LEDs[i][1] = 0x00; LEDs[i][2] = 0x01; break; // Magenta
-                case 6: LEDs[i][0] = 0x01; LEDs[i][1] = 0x01; LEDs[i][2] = 0x00; break; // Yellow
-                case 7: LEDs[i][0] = 0x01; LEDs[i][1] = 0x01; LEDs[i][2] = 0x01; break; // White
-            }
-        } catch (...) {
-            // Handle the exception if the index is out of range
-            // If out of range, just break the loop
-            break;
-        }
-    }
+//     for (int i = start - 1; i <= width; i++) {
+//         try {
+//             switch(color) {
+//                 case 0: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x00; break; // Black
+//                 case 1: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x01; break; // Blue
+//                 case 2: LEDs[i][0] = 0x00; LEDs[i][1] = 0x01; LEDs[i][2] = 0x00; break; // Green
+//                 case 3: LEDs[i][0] = 0x00; LEDs[i][1] = 0x01; LEDs[i][2] = 0x01; break; // Cyan
+//                 case 4: LEDs[i][0] = 0x01; LEDs[i][1] = 0x00; LEDs[i][2] = 0x00; break; // Red
+//                 case 5: LEDs[i][0] = 0x01; LEDs[i][1] = 0x00; LEDs[i][2] = 0x01; break; // Magenta
+//                 case 6: LEDs[i][0] = 0x01; LEDs[i][1] = 0x01; LEDs[i][2] = 0x00; break; // Yellow
+//                 case 7: LEDs[i][0] = 0x01; LEDs[i][1] = 0x01; LEDs[i][2] = 0x01; break; // White
+//             }
+//         } catch (...) {
+//             // Handle the exception if the index is out of range
+//             // If out of range, just break the loop
+//             break;
+//         }
+//     }
 
-    for (int i = 0; i < NUM_LEDS; i++) {
-        sendColor(LEDs[i][0], LEDs[i][1], LEDs[i][2]);
-    }
-}
+//     for (int i = 0; i < NUM_LEDS; i++) {
+//         sendColor(LEDs[i][0], LEDs[i][1], LEDs[i][2]);
+//     }
+// }

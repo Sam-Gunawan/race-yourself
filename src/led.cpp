@@ -77,7 +77,7 @@ void sendColor(uint8_t r, uint8_t g, uint8_t b) {
 void lightLEDs(int color=0, int width=NUM_LEDS, int start=1) {
     int LEDs[NUM_LEDS][3] = { {0, 0, 0} }; // Initialize all LEDs to off (black)
     
-    for (int i = start - 1; i <= width; i++) {
+    for (int i = start - 1; i < start - 1 + width; i++) {
         if (i >= 0 && i < NUM_LEDS) {
             switch(color) {
                 case 0: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x00; break; // Black

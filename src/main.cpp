@@ -92,14 +92,14 @@ int main() {
 
         /* TRY THIS FOR LED (SHOULD HAVE A CHASE ANIMATION LIKE ABOVE^) */
         // for (int j = 0; j < NUM_LEDS; j++) {
-        //     lightLEDs(3, 4, j); // Light up 4 LEDs in cyan color
+        //     lightLEDs(3, 4, j + 1); // Light up 4 LEDs in cyan color
         //     delayMs(500); // Delay for 100ms
         // }  
 
 
         /* IF THAT DOESN'T WORK, TRY THIS */
         // for (int j = 0; j < NUM_LEDS - 4; j++) {
-        //     lightLEDs(3, 4, j); // Light up 4 LEDs in cyan color
+        //     lightLEDs(3, 4, j + 1); // Light up 4 LEDs in cyan color
         //     delayMs(500); // Delay for 100ms
         // }
 

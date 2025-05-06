@@ -9,11 +9,14 @@
 #include "timer.h"
 #include "switch.h"
 #include "lcd.h"
+#include "infrared.h"
+#include "ultrasonic.h"
 
 // TODO: TO BE IMPLEMENTED
 #include "led.h" 
-#include "ultrasonic.h"
 #include "buzzer.h"
+
+#define NUM_LEDS 144     // Number of LEDs on the strip
 
 typedef enum {
     WAIT_PRESS,
@@ -24,6 +27,7 @@ typedef enum {
 
 volatile state buttonState = WAIT_PRESS;
 
+
 /*
  * Function to initialize all the components
  * For easier debugging and readability, we decided to separate all the init functions
@@ -33,22 +37,19 @@ void initEverything() {
     initTimer0();
     initSwitchPB3();
     initLCD();
-
-    // TODO: INIT ULTRASONIC, LED STRIP, BUZZER
+    initLED();
+    initIR();
+    UART_init(103);         // 16MHz, 9600 baud
+    initUltrasonic();
 
     Serial.begin(9600);
     sei(); // Enable global interrupts
 }
 
-/*
- * Function for default display of LCD
- */
+// Function for default display of LCD
 void defaultDisplay() {
     // Clears the display
-    moveCursor(0, 0);                      // Moves the cursor to (0, 0) position (first line)
-    writeString("                ");
-    moveCursor(0, 1);                      // Moves the cursor to (0, 1) position (second line)
-    writeString("                ");
+    clearDisplay();
 
     // Idle display (waiting for track to start)
     moveCursor(0, 0);                      // First line
@@ -61,8 +62,55 @@ int main() {
     initEverything();
     defaultDisplay();
 
+    char buf[32];
+
     while (1) {
-        // TODO: LED ANIMATION WHILE IDLE
+
+        /* THIS IS FOR ULTRASONIC MEASURING AND PRINTING TO TERMINAL */
+        // uint16_t dist = measureDistanceCm();
+
+        // snprintf(buf, sizeof(buf), "Distance: %u cm\r\n", dist);
+        // UART_SendString(buf);
+
+        // delayMs(200); // 5 times per second
+
+
+        /* THIS IS FOR LED STRIP WITHOUT FUNCTION (TESTING PURPOSES) */
+        // for (int i = 0; i < NUM_LEDS; i++) {
+        //     int j;
+        //     for(j = 0; j < i; j++) {
+        //         sendColor(0x00, 0x00, 0x00); // Green
+        //     }
+        //     sendColor(0x00, 0x01, 0x00); // Green
+        //     for(j; j < NUM_LEDS; j++) {
+        //         sendColor(0x00, 0x00, 0x00); // Green
+        //     }
+        //
+        //     delayMs(500);
+        // }
+
+
+        /* TRY THIS FOR LED (SHOULD HAVE A CHASE ANIMATION LIKE ABOVE^) */
+        // for (int j = 0; j < NUM_LEDS; j++) {
+        //     lightLEDs(3, 4, j); // Light up 4 LEDs in cyan color
+        //     delayMs(500); // Delay for 100ms
+        // }  
+
+
+        /* IF THAT DOESN'T WORK, TRY THIS */
+        // for (int j = 0; j < NUM_LEDS - 4; j++) {
+        //     lightLEDs(3, 4, j); // Light up 4 LEDs in cyan color
+        //     delayMs(500); // Delay for 100ms
+        // }
+
+
+        /* TRY THIS TO LIGHT THE WHOLE STRIP UP (BLINKING ANIMATION, 5x) */
+        // for (int blink = 0; blink < 5; blink++) {
+        //     lightLEDs(4, NUM_LEDS, 1); // Light up all LEDs in red color
+        //     delayMs(500); // Delay for 100ms
+        //     lightLEDs(0, NUM_LEDS, 1); // Turn off all LEDs
+        //     delayMs(500); // Delay for 100ms
+        // }
     }
 }
 

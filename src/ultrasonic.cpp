@@ -2,8 +2,11 @@
 #include "timer.h"
 
 // ==== Pin Definitions ====
-#define TRIG_PIN  PE4  // Digital Pin 2
-#define ECHO_PIN  PE5  // Digital Pin 3
+#define TRIG_PIN1  PE4  // Digital Pin 2
+#define ECHO_PIN1  PE5  // Digital Pin 3
+#define TRIG_PIN2  PF0  // Digital Pin 2
+#define ECHO_PIN2  PF1  // Digital Pin 3
+
 
 // ==== UART Setup ====
 void UART_init(uint16_t ubrr) {
@@ -24,13 +27,25 @@ void UART_SendString(const char* s) {
 
 // ==== HC-SR04 Setup ====
 void initUltrasonic() {
-    DDRE |= (1 << TRIG_PIN);    // TRIG as output
-    DDRE &= ~(1 << ECHO_PIN);   // ECHO as input
+    DDRE |= (1 << TRIG_PIN1);    // TRIG as output for the 1st sensor
+    DDRE &= ~(1 << ECHO_PIN1);   // ECHO as input for the 1st sensor
+    DDRE |= (1 << TRIG_PIN2);    // TRIG as output for the 2nd sensor
+    DDRE &= ~(1 << ECHO_PIN2);   // ECHO as input for the 2nd sensor
 }
 
-uint16_t measureDistanceCm() {
+uint16_t measureDistanceCm(int number) {
     uint32_t count = 0;
+    uint8_t TRIG_PIN;
+    uint8_t ECHO_PIN;
 
+    if (number == 1){
+        TRIG_PIN = TRIG_PIN1;
+        ECHO_PIN = ECHO_PIN1;
+    } else if (number == 2){
+        TRIG_PIN = TRIG_PIN2;
+        ECHO_PIN = ECHO_PIN2;
+    }
+    
     // Trigger 10us pulse
     PORTE &= ~(1 << TRIG_PIN);
     delayUs(2);
@@ -62,7 +77,7 @@ int main(void) {
     initUltrasonic();
 
     while (1) {
-        uint16_t dist = measureDistanceCm();
+        uint16_t dist = measureDistanceCm(1);
 
         snprintf(buf, sizeof(buf), "Distance: %u cm\r\n", dist);
         UART_SendString(buf);

@@ -76,26 +76,38 @@ void sendColor(uint8_t r, uint8_t g, uint8_t b) {
  */
 void lightLEDs(int color=0, int width=NUM_LEDS, int start=1) {
     int LEDs[NUM_LEDS][3] = { {0, 0, 0} }; // Initialize all LEDs to off (black)
-    
-    for (int i = start - 1; i < start - 1 + width; i++) {
-        if (i >= 0 && i < NUM_LEDS) {
-            switch(color) {
-                case 0: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x00; break; // Black
-                case 1: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x01; break; // Blue
-                case 2: LEDs[i][0] = 0x00; LEDs[i][1] = 0x01; LEDs[i][2] = 0x00; break; // Green
-                case 3: LEDs[i][0] = 0x00; LEDs[i][1] = 0x01; LEDs[i][2] = 0x01; break; // Cyan
-                case 4: LEDs[i][0] = 0x01; LEDs[i][1] = 0x00; LEDs[i][2] = 0x00; break; // Red
-                case 5: LEDs[i][0] = 0x01; LEDs[i][1] = 0x00; LEDs[i][2] = 0x01; break; // Magenta
-                case 6: LEDs[i][0] = 0x01; LEDs[i][1] = 0x01; LEDs[i][2] = 0x00; break; // Yellow
-                case 7: LEDs[i][0] = 0x01; LEDs[i][1] = 0x01; LEDs[i][2] = 0x01; break; // White
-            }
-        } else {
-            // If out of range, just break the loop
-            break;
-        }
+
+    int startIndex = start - 1;
+    int endIndex = startIndex + width;
+
+    // Clamp to valid LED range
+    if (startIndex < 0) startIndex = 0;
+    if (endIndex > NUM_LEDS) endIndex = NUM_LEDS;
+
+    uint8_t r = 0, g = 0, b = 0;
+
+    switch(color) {
+        case 0: r = 0x00; g = 0x00; b = 0x00; break; // Off
+        case 1: r = 0x00; g = 0x00; b = 0x10; break; // Blue
+        case 2: r = 0x00; g = 0x10; b = 0x00; break; // Green
+        case 3: r = 0x00; g = 0x10; b = 0x10; break; // Cyan
+        case 4: r = 0x10; g = 0x00; b = 0x00; break; // Red
+        case 5: r = 0x10; g = 0x00; b = 0x10; break; // Magenta
+        case 6: r = 0x10; g = 0x10; b = 0x00; break; // Yellow
+        case 7: r = 0x10; g = 0x10; b = 0x10; break; // White
+        default: r = 0x00; g = 0x00; b = 0x00; break;
     }
 
+    for (int i = startIndex; i < endIndex; i++) {
+        LEDs[i][0] = g;
+        LEDs[i][1] = r;
+        LEDs[i][2] = b;
+    }
+
+    // Send data to LEDs
     for (int i = 0; i < NUM_LEDS; i++) {
         sendColor(LEDs[i][0], LEDs[i][1], LEDs[i][2]);
     }
+
+    delayMs(1); // Small delay to allow latch
 }

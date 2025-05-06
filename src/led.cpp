@@ -78,7 +78,7 @@ void lightLEDs(int color=0, int width=NUM_LEDS, int start=1) {
     int LEDs[NUM_LEDS][3] = { {0, 0, 0} }; // Initialize all LEDs to off (black)
     
     for (int i = start - 1; i <= width; i++) {
-        try {
+        if (i >= 0 && i < NUM_LEDS) {
             switch(color) {
                 case 0: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x00; break; // Black
                 case 1: LEDs[i][0] = 0x00; LEDs[i][1] = 0x00; LEDs[i][2] = 0x01; break; // Blue
@@ -89,8 +89,7 @@ void lightLEDs(int color=0, int width=NUM_LEDS, int start=1) {
                 case 6: LEDs[i][0] = 0x01; LEDs[i][1] = 0x01; LEDs[i][2] = 0x00; break; // Yellow
                 case 7: LEDs[i][0] = 0x01; LEDs[i][1] = 0x01; LEDs[i][2] = 0x01; break; // White
             }
-        } catch (...) {
-            // Handle the exception if the index is out of range
+        } else {
             // If out of range, just break the loop
             break;
         }

@@ -68,20 +68,3 @@ uint16_t measureDistanceCm(int number) {
 
     return count / 58;  // convert to cm
 }
-
-// ==== Main ====
-int main(void) {
-    char buf[32];
-
-    UART_init(103);         // 16MHz, 9600 baud
-    initUltrasonic();
-
-    while (1) {
-        uint16_t dist = measureDistanceCm(1);
-
-        snprintf(buf, sizeof(buf), "Distance: %u cm\r\n", dist);
-        UART_SendString(buf);
-
-        delayMs(200); // 5 times per second
-    }
-}

@@ -1,173 +1,58 @@
 //
-
-
-
 // !!! WARNING !!! AUTO-GENERATED FILE!
-
-
 // PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
-
-
 // https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
-
-
 //
-
-
 {
-
-
     "configurations": [
-
-
         {
-
-
             "name": "PlatformIO",
-
-
             "includePath": [
-
-
-                "d:/Uni/Sem 6/Microprocessor/race-yourself/include",
-
-
-                "d:/Uni/Sem 6/Microprocessor/race-yourself/src",
-
-
-                "d:/Uni/Sem 6/Microprocessor/race-yourself/.pio/libdeps/megaatmega2560/FastLED/src",
-
-
-                "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
-
-
-                "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
-
-
-                "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/cores/arduino",
-
-
-                "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/variants/mega",
-
-
-                "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
-
-
-                "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/libraries/HID/src",
-
-
-                "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
-
-
+                "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/include",
+                "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/src",
+                "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/.pio/libdeps/megaatmega2560/FastLED/src",
+                "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                "C:/Users/Student/.platformio/packages/framework-arduino-avr/cores/arduino",
+                "C:/Users/Student/.platformio/packages/framework-arduino-avr/variants/mega",
+                "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
                 ""
-
-
             ],
-
-
             "browse": {
-
-
                 "limitSymbolsToIncludedHeaders": true,
-
-
                 "path": [
-
-
-                    "d:/Uni/Sem 6/Microprocessor/race-yourself/include",
-
-
-                    "d:/Uni/Sem 6/Microprocessor/race-yourself/src",
-
-
-                    "d:/Uni/Sem 6/Microprocessor/race-yourself/.pio/libdeps/megaatmega2560/FastLED/src",
-
-
-                    "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
-
-
-                    "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
-
-
-                    "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/cores/arduino",
-
-
-                    "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/variants/mega",
-
-
-                    "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
-
-
-                    "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/libraries/HID/src",
-
-
-                    "C:/Users/Samuel/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
-
-
+                    "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/include",
+                    "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/src",
+                    "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/.pio/libdeps/megaatmega2560/FastLED/src",
+                    "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                    "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                    "C:/Users/Student/.platformio/packages/framework-arduino-avr/cores/arduino",
+                    "C:/Users/Student/.platformio/packages/framework-arduino-avr/variants/mega",
+                    "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                    "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                    "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
                     ""
-
-
                 ]
-
-
             },
-
-
             "defines": [
-
-
                 "PLATFORMIO=60118",
-
-
                 "ARDUINO_AVR_MEGA2560",
-
-
                 "F_CPU=16000000L",
-
-
                 "ARDUINO_ARCH_AVR",
-
-
                 "ARDUINO=10808",
-
-
                 "__AVR_ATmega2560__",
-
-
                 ""
-
-
             ],
-
-
             "cStandard": "gnu11",
-
-
             "cppStandard": "gnu++11",
-
-
-            "compilerPath": "C:/Users/Samuel/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
-
-
+            "compilerPath": "C:/Users/Student/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
             "compilerArgs": [
-
-
                 "-mmcu=atmega2560",
-
-
                 ""
-
-
             ]
-
-
         }
-
-
     ],
-
-
     "version": 4
-
-
 }

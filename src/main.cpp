@@ -3,6 +3,7 @@
 // Date: ...
 // Microprossesor Final Project: "Race Yourself"
 
+#include <util/delay.h>
 #include <Arduino.h>
 #include <avr/io.h>
 #include <string.h>
@@ -13,10 +14,11 @@
 #include "ultrasonic.h"
 
 // TODO: TO BE IMPLEMENTED
-#include "led.h" 
+#include "led.h"
 #include "buzzer.h"
 
 #define NUM_LEDS 144     // Number of LEDs on the strip
+int INDEX_LEDS = 0;
 
 typedef enum {
     WAIT_PRESS,
@@ -31,16 +33,18 @@ volatile state buttonState = WAIT_PRESS;
 /*
  * Function to initialize all the components
  * For easier debugging and readability, we decided to separate all the init functions
- */ 
+ */
 void initEverything() {
+    setupPWM();
+    UART_init(103);         // 16MHz, 9600 baud
+    initUltrasonic();
     initTimer1();
     initTimer0();
     initSwitchPB3();
     initLCD();
     initLED();
     initIR();
-    UART_init(103);         // 16MHz, 9600 baud
-    initUltrasonic();
+    
 
     Serial.begin(9600);
     sei(); // Enable global interrupts
@@ -58,13 +62,48 @@ void defaultDisplay() {
     writeString("Idle...");
 }
 
+void standby() {
+    defaultDisplay();
+    while(1){
+        for (int i=0; i < 144; i++) {
+            sendColor(0x01, 0x01, 0x00);
+        }
+    }
+}
+
 int main() {
     initEverything();
-    defaultDisplay();
+    standby();
 
-    char buf[32];
 
-    while (1) {
+
+    //ULTRASONIC
+    
+
+
+        // for (int i = 0; i < NUM_LEDS; i++) {
+        //     int j;
+        //     for(j = 0; j < i; j++) {
+        //         sendColor(0x00, 0x00, 0x00); // Green
+        //     }
+        //     sendColor(0x00, 0x01, 0x00); // Green
+        //     for(j; j < NUM_LEDS; j++) {
+        //         sendColor(0x00, 0x00, 0x00); // Green
+        //     }
+        //     // NUM_LED2++;
+        //     _delay_ms(500);
+        // }
+
+        
+
+
+
+
+
+
+
+
+
 
         /* THIS IS FOR ULTRASONIC MEASURING AND PRINTING TO TERMINAL */
         // uint16_t dist = measureDistanceCm();
@@ -91,10 +130,10 @@ int main() {
 
 
         /* TRY THIS FOR LED (SHOULD HAVE A CHASE ANIMATION LIKE ABOVE^) */
-        // for (int j = 0; j < NUM_LEDS; j++) {
-        //     lightLEDs(3, 4, j + 1); // Light up 4 LEDs in cyan color
-        //     delayMs(500); // Delay for 100ms
-        // }  
+        for (int j = 0; j < NUM_LEDS; j++) {
+            lightLEDs(3, 4, j + 1); // Light up 4 LEDs in cyan color
+            delayMs(500); // Delay for 100ms
+        }  
 
 
         /* IF THAT DOESN'T WORK, TRY THIS */
@@ -111,7 +150,7 @@ int main() {
         //     lightLEDs(0, NUM_LEDS, 1); // Turn off all LEDs
         //     delayMs(500); // Delay for 100ms
         // }
-    }
+    
 }
 
 ISR(PCINT0_vect) {
@@ -119,26 +158,45 @@ ISR(PCINT0_vect) {
         case WAIT_PRESS:
             delayMs(30);
             buttonState = DB_PRESS;
-  
+
         case DB_PRESS:
             delayMs(30);                        // Debounce delay
             cli();                              // Temporarily disables global interrupt to prevent multiple button press while countdown is ongoing.
             Serial.println("start button triggered");
-        
+
             // TODO: START COUNTDOWN, BEGIN TRACKING
+
+            while(1) {
+                char buf[32];
+                UART_SendString(buf);
+        
+                uint16_t dist = measureDistanceCm();
+                snprintf(buf, sizeof(buf), "Distance: %u cm\r\n", dist);
+                INDEX_LEDS = dist * 2.5;
+
+                for (int i=0; i < 144; i++) {
+                    if (i > INDEX_LEDS - 6 && i < INDEX_LEDS) {
+                        sendColor(0x01, 0x01, 0x00); // Green
+                    } else {
+                        sendColor(0x00, 0x00, 0x00); // Green
+                    }
+                }
+                _delay_ms(1);
+        
+            }
 
             buttonState = WAIT_RELEASE;         // Move to the next state after debouncing
             sei();                              // Re-activates global interrupts after finished
-  
+
         case WAIT_RELEASE:
             delayMs(30);
             buttonState = DB_RELEASE;
-        
+
         case DB_RELEASE:
             delayMs(30);
             buttonState = WAIT_PRESS;           // Return to initial state
-    
+
         default:
             break;
     }
-  }
+}

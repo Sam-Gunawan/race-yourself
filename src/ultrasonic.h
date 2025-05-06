@@ -1,7 +1,7 @@
 #ifndef ULTRASONIC_H
 #define ULTRASONIC_H
 
-#define F_CPU 16000000UL
+
 #include <avr/io.h>
 #include <stdio.h>
 
@@ -19,5 +19,7 @@ void initUltrasonic();
 
 // Measures and returns the distance in centimeters using the ultrasonic sensor.
 uint16_t measureDistanceCm();
+
+// uint16_t ultra_main();
 
 #endif

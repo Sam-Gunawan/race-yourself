@@ -1,6 +1,11 @@
 #include "ultrasonic.h"
 #include "timer.h"
 
+#define F_CPU 16000000UL
+#include <avr/io.h>
+#include <util/delay.h>
+#include <stdio.h>
+
 // ==== Pin Definitions ====
 #define TRIG_PIN1  PE4  // Digital Pin 2
 #define ECHO_PIN1  PE5  // Digital Pin 3
@@ -25,15 +30,15 @@ void UART_SendString(const char* s) {
     while (*s) UART_SendChar(*s++);
 }
 
-// ==== HC-SR04 Setup ====
 void initUltrasonic() {
-    DDRE |= (1 << TRIG_PIN1);    // TRIG as output for the 1st sensor
-    DDRE &= ~(1 << ECHO_PIN1);   // ECHO as input for the 1st sensor
+    DDRE |= (1 << TRIG_PIN1);    // TRIG as output
+    DDRE &= ~(1 << ECHO_PIN1);   // ECHO as input
     DDRE |= (1 << TRIG_PIN2);    // TRIG as output for the 2nd sensor
-    DDRE &= ~(1 << ECHO_PIN2);   // ECHO as input for the 2nd sensor
+    DDRE &= ~(1 << ECHO_PIN2); 
 }
 
-uint16_t measureDistanceCm(int number) {
+uint16_t measureDistanceCm() {
+    int number = 1;
     uint32_t count = 0;
     uint8_t TRIG_PIN;
     uint8_t ECHO_PIN;
@@ -45,26 +50,87 @@ uint16_t measureDistanceCm(int number) {
         TRIG_PIN = TRIG_PIN2;
         ECHO_PIN = ECHO_PIN2;
     }
-    
     // Trigger 10us pulse
     PORTE &= ~(1 << TRIG_PIN);
-    delayUs(2);
+    _delay_us(2);
     PORTE |= (1 << TRIG_PIN);
-    delayUs(10);
+    _delay_us(10);
     PORTE &= ~(1 << TRIG_PIN);
 
     // Wait for ECHO HIGH (timeout)
     uint32_t timeout = 60000;
-    while (!(PINE & (1 << ECHO_PIN)) && timeout--) delayUs(1);
+    while (!(PINE & (1 << ECHO_PIN)) && timeout--) _delay_us(1);
     if (timeout == 0) return 0;
 
     // Measure ECHO HIGH pulse duration
     count = 0;
     while ((PINE & (1 << ECHO_PIN))) {
-        delayUs(1);
+        _delay_us(1);
         count++;
         if (count > 30000) break; // timeout ~500 cm
     }
 
     return count / 58;  // convert to cm
 }
+
+// ==== HC-SR04 Setup ====
+// void initUltrasonic() {
+//     DDRE |= (1 << TRIG_PIN1);    // TRIG as output for the 1st sensor
+//     DDRE &= ~(1 << ECHO_PIN1);   // ECHO as input for the 1st sensor
+//     DDRE |= (1 << TRIG_PIN2);    // TRIG as output for the 2nd sensor
+//     DDRE &= ~(1 << ECHO_PIN2);   // ECHO as input for the 2nd sensor
+// }
+
+// uint16_t measureDistanceCm() {
+//     uint32_t count = 0;
+//     uint8_t TRIG_PIN;
+//     uint8_t ECHO_PIN;
+
+//     // if (number == 1){
+//         TRIG_PIN = TRIG_PIN1;
+//         ECHO_PIN = ECHO_PIN1;
+//     // } else if (number == 2){
+//     //     TRIG_PIN = TRIG_PIN2;
+//     //     ECHO_PIN = ECHO_PIN2;
+//     // }
+    
+//     // Trigger 10us pulse
+//     PORTE &= ~(1 << TRIG_PIN);
+//     delayUs(2);
+//     PORTE |= (1 << TRIG_PIN);
+//     delayUs(10);
+//     PORTE &= ~(1 << TRIG_PIN);
+
+//     // Wait for ECHO HIGH (timeout)
+//     uint32_t timeout = 60000;
+//     while (!(PINE & (1 << ECHO_PIN)) && timeout--) delayUs(1);
+//     if (timeout == 0) return 0;
+
+//     // Measure ECHO HIGH pulse duration
+//     count = 0;
+//     while ((PINE & (1 << ECHO_PIN))) {
+//         delayUs(1);
+//         count++;
+//         if (count > 30000) break; // timeout ~500 cm
+//     }
+
+//     return count / 58;  // convert to cm
+// }
+
+// // ==== Main ====
+// uint16_t ultra_main() {
+//     char buf[32];
+
+//     uint16_t dist = measureDistanceCm();
+
+//     snprintf(buf, sizeof(buf), "Distance: %u cm\r\n", dist);
+//     UART_SendString(buf);
+
+//     _delay_ms(200); // 5 times per second
+
+//     return(dist);
+// }
+
+
+
+

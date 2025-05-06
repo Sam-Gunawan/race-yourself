@@ -39,9 +39,8 @@ void initEverything() {
     initLCD();
     initLED();
     initIR();
-    UART_init(103);         // 16MHz, 9600 baud
-    initUltrasonic();
-
+    // UART_init(103);         // 16MHz, 9600 baud
+    ultrasonic_init();
     Serial.begin(9600);
     sei(); // Enable global interrupts
 }
@@ -83,7 +82,15 @@ int main() {
     char buf[32];
 
     while (1) {
+        uint16_t distance1 = measure_distance_cm(1);
+        Serial.println(distance1);
+        uint16_t distance2 = measure_distance_cm(2);
+        Serial.println(distance2);
+        delayMs(100);
 
+
+
+        
         /* THIS IS FOR ULTRASONIC MEASURING AND PRINTING TO TERMINAL */
         // uint16_t dist = measureDistanceCm();
 
@@ -164,15 +171,15 @@ ISR(PCINT0_vect) {
     }
 }
 
-  ISR(PCINT2_vect) {
-    // Handle pins PCINT16–23 (PORTK)
+//   ISR(PCINT2_vect) {
+//     // Handle pins PCINT16–23 (PORTK)
     
-    if (!(PINK & (1 << PK1))) {
-        Serial.println("2");    
-    } 
+//     if (!(PINK & (1 << PK1))) {
+//         Serial.println("2");    
+//     } 
     
-    if (!(PINK & (1 << PK2))) {
-        Serial.println("3");
-    }
-    delayMs(10);
-}
+//     if (!(PINK & (1 << PK2))) {
+//         Serial.println("3");
+//     }
+//     delayMs(10);
+// }

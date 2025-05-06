@@ -5,19 +5,11 @@
 #include <avr/io.h>
 #include <stdio.h>
 
-// Initializes the UART communication with the given baud rate.
-void UART_init(uint16_t ubrr);
-
-// Sends a single character over UART.
-void UART_SendChar(char c);
-
-// Sends a null-terminated string over UART.
-void UART_SendString(const char* s);
 
 // Initializes the ultrasonic sensor.
-void initUltrasonic();
+void ultrasonic_init();
 
 // Measures and returns the distance in centimeters using the ultrasonic sensor.
-uint16_t measureDistanceCm(uint8_t number);
+uint16_t measure_distance_cm(int number);
 
-#endif
+#endif  

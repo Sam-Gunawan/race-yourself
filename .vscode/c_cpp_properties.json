@@ -8,9 +8,9 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "c:/code/finalmic/race-yourself/include",
-                "c:/code/finalmic/race-yourself/src",
-                "c:/code/finalmic/race-yourself/.pio/libdeps/megaatmega2560/FastLED/src",
+                "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/include",
+                "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/src",
+                "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/.pio/libdeps/megaatmega2560/FastLED/src",
                 "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
                 "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
                 "C:/Users/Student/.platformio/packages/framework-arduino-avr/cores/arduino",
@@ -23,9 +23,9 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "c:/code/finalmic/race-yourself/include",
-                    "c:/code/finalmic/race-yourself/src",
-                    "c:/code/finalmic/race-yourself/.pio/libdeps/megaatmega2560/FastLED/src",
+                    "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/include",
+                    "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/src",
+                    "c:/Users/Student/Documents/Uni/MicroProcessor/race-yourself/.pio/libdeps/megaatmega2560/FastLED/src",
                     "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
                     "C:/Users/Student/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
                     "C:/Users/Student/.platformio/packages/framework-arduino-avr/cores/arduino",

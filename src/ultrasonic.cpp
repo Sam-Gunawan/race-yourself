@@ -2,10 +2,10 @@
 #include "timer.h"
 
 // ==== Pin Definitions ====
-#define TRIG_PIN1  PE4  // Digital Pin 2
-#define ECHO_PIN1  PE5  // Digital Pin 3
-#define TRIG_PIN2  PF0  // Digital Pin 2
-#define ECHO_PIN2  PF1  // Digital Pin 3
+#define TRIG_PIN1  PE4  // Digital Pin 
+#define ECHO_PIN1  PE5  // Digital Pin 
+#define TRIG_PIN2  PE3  // Digital Pin 
+#define ECHO_PIN2  PH3  // Digital Pin 
 
 
 // ==== UART Setup ====
@@ -33,7 +33,7 @@ void initUltrasonic() {
     DDRE &= ~(1 << ECHO_PIN2);   // ECHO as input for the 2nd sensor
 }
 
-uint16_t measureDistanceCm(int number) {
+uint16_t measureDistanceCm(uint8_t number) {
     uint32_t count = 0;
     uint8_t TRIG_PIN;
     uint8_t ECHO_PIN;

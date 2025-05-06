@@ -58,10 +58,28 @@ void defaultDisplay() {
     writeString("Idle...");
 }
 
+void ir_detect(){
+    int tim = 0;
+    for (int i = 0; i < 10; i++)
+    {
+        if (IRSensorRead(1) == 1){
+            Serial.println("bad, not detected");
+            break;
+        }
+        if (i >=1499){
+            tim = i;
+        }
+        delayMs(2);
+    }
+    if (tim >= 1499) {
+        Serial.println("Good");
+    }
+}
+
 int main() {
     initEverything();
     defaultDisplay();
-
+    Serial.println("ok");
     char buf[32];
 
     while (1) {
@@ -74,6 +92,9 @@ int main() {
 
         // delayMs(200); // 5 times per second
 
+        
+
+        
 
         /* THIS IS FOR LED STRIP WITHOUT FUNCTION (TESTING PURPOSES) */
         // for (int i = 0; i < NUM_LEDS; i++) {
@@ -85,7 +106,7 @@ int main() {
         //     for(j; j < NUM_LEDS; j++) {
         //         sendColor(0x00, 0x00, 0x00); // Green
         //     }
-        //
+        
         //     delayMs(500);
         // }
 
@@ -141,4 +162,17 @@ ISR(PCINT0_vect) {
         default:
             break;
     }
-  }
+}
+
+  ISR(PCINT2_vect) {
+    // Handle pins PCINT16–23 (PORTK)
+    
+    if (!(PINK & (1 << PK1))) {
+        Serial.println("2");    
+    } 
+    
+    if (!(PINK & (1 << PK2))) {
+        Serial.println("3");
+    }
+    delayMs(10);
+}

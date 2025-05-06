@@ -18,6 +18,6 @@ void UART_SendString(const char* s);
 void initUltrasonic();
 
 // Measures and returns the distance in centimeters using the ultrasonic sensor.
-uint16_t measureDistanceCm();
+uint16_t measureDistanceCm(uint8_t number);
 
 #endif

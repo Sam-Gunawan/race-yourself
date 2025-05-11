@@ -52,22 +52,13 @@ void initTimer0(){
 
 /* Returns the time since arduino started in microseconds. Works like micros() in Arduino library */
 unsigned long microsSinceStart() {
-    unsigned long time;
-
-    // Disable interrupts to avoid interrupt conflicts
-    // cli();
-    
     // Read the Timer0 value, which counts microseconds.
-    time = TCNT0; 
-
-    // Re-enable interrupts
-    // sei();
-
     // Timer0 ticks every 500 nanoseconds (prescaler = 8, 16MHz / 8 = 2MHz, 1 tick = 1 / 2MHz = 500 ns)
-    return time / 2;  // In this case we divide by 2 t0 get the time per 1 microsecond
-    
+    // In this case we divide by 2 t0 get the time per 1 microsecond
+    return TCNT0 / 2; 
+
     /*
-     * E.g. if TCNT0 (or time) = 100 ticks
+     * E.g. if TCNT0 = 100 ticks
      * This means that 100 * 500 ns = 50 us has passed.
      * Thus, 100 ticks = 50 us, 100/50 ticks = 1 us, 2 ticks = 1 us.
      * So to get the time in us units, time = amount of ticks / 2.

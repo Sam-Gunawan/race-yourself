@@ -11,6 +11,6 @@ void sendBit(uint8_t bit);
 void sendByte(uint8_t byte);
 void sendColor(uint8_t red, uint8_t green, uint8_t blue);
 void sendLeds(uint8_t r, uint8_t g, uint8_t b, int count);
-void lightLEDs(int color, int width, int start);
+void lightLEDs(uint8_t r, uint8_t g, uint8_t b, int width, int start);
 
 #endif

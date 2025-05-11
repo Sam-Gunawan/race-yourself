@@ -128,21 +128,34 @@ int strLength(const char* str) {
     return len;
 }
 
+// void buildScrollBuffer() {
+//     scrollLen = 0;
+//     int messageLen = strLength(message);  // Replaces strlen(message)
+
+//     for (uint8_t i = 0; i < messageLen; i++) {
+//         const uint8_t* bitmap = getCharBitmap(message[i]);
+//         // Build columns from rows (transpose)
+//         for (int8_t col = 7; col >= 0; col--) {  // REVERSED COLUMN ORDER
+//             uint8_t transposed = 0;
+//             for (uint8_t row = 0; row < 8; row++) {
+//                 if (bitmap[row] & (1 << col)) {
+//                     transposed |= (1 << (7 - row));
+//                 }
+//             }
+//             scrollBuffer[scrollLen++] = transposed;
+//         }
+//         scrollBuffer[scrollLen++] = 0x00; // space between characters
+//     }
+// }
+
 void buildScrollBuffer() {
     scrollLen = 0;
-    int messageLen = strLength(message);  // Replaces strlen(message)
+    int messageLen = strLength(message);
 
     for (uint8_t i = 0; i < messageLen; i++) {
         const uint8_t* bitmap = getCharBitmap(message[i]);
-        // Build columns from rows (transpose)
-        for (int8_t col = 7; col >= 0; col--) {  // REVERSED COLUMN ORDER
-            uint8_t transposed = 0;
-            for (uint8_t row = 0; row < 8; row++) {
-                if (bitmap[row] & (1 << col)) {
-                    transposed |= (1 << (7 - row));
-                }
-            }
-            scrollBuffer[scrollLen++] = transposed;
+        for (uint8_t col = 0; col < 8; col++) {
+            scrollBuffer[scrollLen++] = bitmap[col];
         }
         scrollBuffer[scrollLen++] = 0x00; // space between characters
     }

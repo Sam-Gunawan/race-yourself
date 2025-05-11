@@ -43,7 +43,7 @@ void sendBit(uint8_t bitVal) {
 
 void sendByte(uint8_t byte) {
     for (uint8_t i = 0; i < 8; i++) {
-        sendBit(byte & 0xFF);
+        sendBit(byte & 0x80);
         byte <<= 1;
     }
 }
@@ -86,8 +86,8 @@ void lightLEDs(int color=0, int width=NUM_LEDS, int start=1) {
         case 0: r = 0x00; g = 0x00; b = 0x00; break; // Off
         case 1: r = 0x00; g = 0x00; b = 0x10; break; // Blue
         case 2: r = 0x00; g = 0x10; b = 0x00; break; // Green
-        case 3: r = 0x00; g = 0x10; b = 0x10; break; // Cyan
-        case 4: r = 0x10; g = 0x00; b = 0x00; break; // Red
+        case 3: r = 0xFF; g = 0xFF; b = 0x10; break; // Cyan
+        case 4: r = 0xFF; g = 0x00; b = 0x00; break; // Red
         case 5: r = 0x10; g = 0x00; b = 0x10; break; // Magenta
         case 6: r = 0x10; g = 0x10; b = 0x00; break; // Yellow
         case 7: r = 0x10; g = 0x10; b = 0x10; break; // White
@@ -95,8 +95,8 @@ void lightLEDs(int color=0, int width=NUM_LEDS, int start=1) {
     }
 
     for (int i = startIndex; i < endIndex; i++) {
-        LEDs[i][0] = g;
-        LEDs[i][1] = r;
+        LEDs[i][0] = r;
+        LEDs[i][1] = g;
         LEDs[i][2] = b;
     }
 

@@ -55,13 +55,13 @@ unsigned long microsSinceStart() {
     unsigned long time;
 
     // Disable interrupts to avoid interrupt conflicts
-    cli();
+    // cli();
     
     // Read the Timer0 value, which counts microseconds.
     time = TCNT0; 
 
     // Re-enable interrupts
-    sei();
+    // sei();
 
     // Timer0 ticks every 500 nanoseconds (prescaler = 8, 16MHz / 8 = 2MHz, 1 tick = 1 / 2MHz = 500 ns)
     return time / 2;  // In this case we divide by 2 t0 get the time per 1 microsecond

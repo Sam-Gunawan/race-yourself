@@ -201,9 +201,9 @@ void buzzer_main()
         for (uint8_t i = 0; i < numNotes; ++i)
         {
             playNote(marioTheme[i].frequency);
-            delayMs(marioTheme[i].duration * 1.2);
+            delayMs(marioTheme[i].duration / 9);
         }
 
-        delayMs(500); // Little pause before restarting
+        delayMs(50); // Little pause before restarting
     }
 }

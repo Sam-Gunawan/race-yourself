@@ -54,9 +54,6 @@ uint8_t clear[8] = {
 
 
 
-
-
-
 void displayFace(uint8_t face[8]) {
     for (uint8_t i = 0; i < 8; i++) {
         MAX7219_Send(i + 1, face[i]);

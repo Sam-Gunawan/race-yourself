@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "ultrasonic.h"
 #include "timer.h"
+#include <avr/io.h>
 
 // ==== Pin Definitions ====
 #define TRIG_PIN1  PE4  // Digital Pin 
@@ -17,6 +18,22 @@ void initUltrasonic() {
     DDRE &= ~(1 << ECHO_PIN1);   // ECHO as input
     DDRE |= (1 << TRIG_PIN2);    // TRIG as output for the 2nd sensor
     DDRE &= ~(1 << ECHO_PIN2); 
+}
+
+void UART_init(uint16_t ubrr) {
+    UBRR0H = (uint8_t)(ubrr >> 8);
+    UBRR0L = (uint8_t)ubrr;
+    UCSR0B = (1 << TXEN0);                    // Enable TX
+    UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);   // 8-bit
+}
+
+void UART_SendChar(char c) {
+    while (!(UCSR0A & (1 << UDRE0)));
+    UDR0 = c;
+}
+
+void UART_SendString(const char* s) {
+    while (*s) UART_SendChar(*s++);
 }
 
 uint16_t measureDistanceCm(int number) {

@@ -150,6 +150,8 @@ void buildScrollBuffer() {
 
 
 
+
+
 void scrollMessage() {
     buildScrollBuffer();
     for (uint16_t i = 0; i < scrollLen - 8; i++) {

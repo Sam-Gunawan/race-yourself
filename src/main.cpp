@@ -29,6 +29,7 @@ typedef enum {
 } state;
 
 volatile state buttonState = WAIT_PRESS;
+volatile bool raceStart = false;
 volatile bool raceFinished = false;
 volatile bool isValid = true;
 volatile unsigned int startTime;
@@ -72,22 +73,41 @@ void defaultDisplay() {
 
 void standby() {
     defaultDisplay();
-    while(1){
-        for (int i=0; i < 144; i++) {
-            sendColor(0x01, 0x01, 0x00);
-        }
+    for (int i=0; i < 144; i++) {
+        sendColor(0x01, 0x00, 0x01);
     }
+    delayMs(1000);
+    for (int i=0; i < 144; i++) {
+        sendColor(0x00, 0x00, 0x00);
+    }
+    delayMs(1000);
 }
 
 
 int main() {
     initEverything();
-    standby();
-
+    
     //char buf[32];
-
+    
     while (1) {
         
+
+        if (!raceStart) {
+            Serial.println(raceStart);
+            standby();  // Only go to standby when race hasn't started
+        } else {
+            Serial.println("Race has started");
+
+            for (int i = 0; i < 144; i++) {
+                sendColor(0x00, 0x00, 0x00);  // Clear LEDs
+            }
+            delayMs(1);
+
+            // Reset `raceStart` or handle race logic here
+
+            // For now, after clearing, reset so standby resumes
+            raceStart = false;
+        }
 
         /* THIS IS FOR ULTRASONIC MEASURING AND PRINTING TO TERMINAL */
         // uint16_t dist = measureDistanceCm();
@@ -170,38 +190,43 @@ ISR(PCINT0_vect) {
             Serial.println("start button triggered");
             
             StartCountdown(); // ✅ Trigger countdown and “GO !!!”
-            // for (int i = 0; i < NUM_LEDS; i++) {
-            //     sendColor(0x01, 0x00, 0x00);
-            // }
+            for (int i = 0; i < NUM_LEDS; i++) {
+                sendColor(0x01, 0x00, 0x00);
+            }
+            raceStart = true;
 
             if (IRSensorRead(1) == 1) {
-                for (int i = 0; i < NUM_LEDS; i++) {
-                    sendColor(0x01, 0x00, 0x01);
-                }
+                Serial.println("IR sensor read");
+                Serial.println("LED Changing");
                 delayMs(2000);
                 buzzer_main();
+                isValid = false;
             }
 
             if (isValid) {
+                Serial.println("isValid entered");
                 startTime = microsSinceStart();
 
                 while(!raceFinished) {
-                    // char buf[32];
-                    //UART_SendString(buf);
+                    Serial.println("Race loop entered");
+                    char buf[32];
+                    UART_SendString(buf);
             
                     uint16_t dist = measureDistanceCm(1);
-                    // snprintf(buf, sizeof(buf), "Distance: %u cm\r\n", dist);
+                    snprintf(buf, sizeof(buf), "Distance: %u cm\r\n", dist);
                     INDEX_LEDS = dist * 2.5;
 
                     for (int i=0; i < 144; i++) {
                         if (i > INDEX_LEDS - 6 && i < INDEX_LEDS) {
-                            sendColor(0x01, 0x01, 0x00); // Green
+                            sendColor(0x01, 0x01, 0x01); // Green
                         } else {
                             sendColor(0x00, 0x00, 0x00); // Green
                         }
                     }
                     delayMs(1);
                 }
+                
+                raceDuration = finishTime - startTime;
 
                 for (int blink = 0; blink < 3; blink++) {
                     for (int i = 0; i < NUM_LEDS; i++) {
@@ -210,7 +235,6 @@ ISR(PCINT0_vect) {
                     delayMs(500);
                 }
 
-                raceDuration = finishTime - startTime;
 
                 Serial.print("Race time: ");
                 Serial.println(raceDuration);
@@ -235,11 +259,11 @@ ISR(PCINT0_vect) {
     }
 }
 
-// ISR(PCINT2_vect) {
-//     if (!(PINK & (1 << PK2))) {
-//         // Serial.println("3");
-//         finishTime = microsSinceStart();
-//         raceFinished = true;
-//     }
-//     delayMs(10);
-// }
+ISR(PCINT2_vect) {
+    if (!(PINK & (1 << PK2))) {
+        // Serial.println("3");
+        finishTime = microsSinceStart();
+        raceFinished = true;
+    }
+    // delayMs(10);
+}

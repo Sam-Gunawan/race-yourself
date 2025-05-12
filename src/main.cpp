@@ -266,10 +266,10 @@ int main() {
                         Serial.print("Delay time: ");
                         Serial.println(delayTime);
 
-                        int startLED = 1;
-                        lightLEDs(0xFF, 0x00, 0xFF, 6, startLED);
-                        delayMs(delayTime); // Delay time in ms
-                        startLED++;
+                        for (int startLED = 1; startLED < NUM_LEDS; startLED++) {
+                            lightLEDs(0xFF, 0x00, 0xFF, 6, startLED);
+                            delayMs(delayTime); // Delay time in ms
+                        }
                     }
                 }
             } else {

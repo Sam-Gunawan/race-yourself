@@ -270,6 +270,10 @@ int main() {
                             lightLEDs(0xFF, 0x00, 0xFF, 6, startLED);
                             delayMs(delayTime); // Delay time in ms
                         }
+
+                        while (!raceFinished) {
+                            // Wait for the IR sensor to detect the player and finish race
+                        }
                     }
                 }
             } else {

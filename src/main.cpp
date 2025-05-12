@@ -38,10 +38,9 @@ volatile bool raceFinished = false;
 volatile bool isValid = true;
 volatile unsigned int startTime;
 volatile unsigned int finishTime;
-volatile unsigned int raceDuration;
 volatile bool mode = 0; // 0: track mode, 1: ghost mode
 volatile bool ghostMode = false;
-volatile double speed;
+volatile double playerSpeed;
 
 int INDEX_LEDS = 0;
 volatile double counter = 0;
@@ -118,39 +117,97 @@ int main() {
 
             if (raceFinished) {
                 initLED(); // Reinitialize the LED strip
-                finishTime = microsSinceStart();
-                Serial.println("Finish time: ");
-                Serial.println(finishTime);
-
-                raceDuration = finishTime - startTime;
-
-                Serial.print("Race time (using microsSinceStart()): ");
-                Serial.println(raceDuration);
-
-                Serial.print("Race time (using counter): ");
 
                 raceTime = counter/9.17; // Convert to seconds
+                playerSpeed = DISTANCE / raceTime; // Calculate the speed m/s
+                
+                Serial.print("Player time: ");
                 Serial.println(raceTime);
+                Serial.print("Player speed: ");
+                Serial.println(playerSpeed);
                 
                 if (raceTime > ghostTime) {ghostTime = raceTime;} // Save fastest time record to ghost time
-                
-                speed = DISTANCE / raceTime; // Calculate the speed m/s
-                
-                Serial.print("Run time speed: ");
-                Serial.println(speed);
-                char raceTimeSpeed[16];
-                sprintf(raceTimeSpeed, "%.2f", speed); // Keep 2 decimal place for the speed display
 
-                clearDisplay();
-                moveCursor(0, 0);
-                writeString("Race Finished!");
-                moveCursor(0, 1);
-                char raceTimeString[16];
-                sprintf(raceTimeString, "%.2f", raceTime);  // Keep 2 decimal places
-                writeString(raceTimeString);
+                Serial.print("Ghost time: ");
+                Serial.println(ghostTime);
 
+                // Check mode, different outputs for different outcomes
+                // Ghost mode
+                if (mode) {
+                    // Player wins
+                    if (raceTime > ghostTime) {
+                        clearDisplay();
+                        moveCursor(0, 0);
+                        writeString("Ghost defeated!");
+
+                        moveCursor(0, 1);
+                        char speedString[16];
+                        sprintf(speedString, "Speed: %.2f", playerSpeed);  // Keep 2 decimal places
+                        writeString(speedString);
+
+                        // Green LED breathing animation
+                        for (int breathe = 0; breathe < 10; breathe++) {
+                            for (int brightness = 0; brightness <= 255; brightness += 5) {
+                                lightLEDs(0x00, brightness, 0x00, NUM_LEDS, 1); // Gradually increase brightness
+                                _delay_ms(10); // Delay for smooth animation
+                            }
+                            for (int brightness = 255; brightness >= 0; brightness -= 5) {
+                                lightLEDs(0x00, brightness, 0x00, NUM_LEDS, 1); // Gradually decrease brightness
+                                _delay_ms(10); // Delay for smooth animation
+                            }
+                        }
+
+                    // Ghost wins
+                    } else {
+                        clearDisplay();
+                        moveCursor(0, 0);
+                        writeString("Try again!");
+
+                        moveCursor(0, 1);
+                        char speedString[16];
+                        sprintf(speedString, "Speed: %.2f", playerSpeed);  // Keep 2 decimal places
+                        writeString(speedString);
+
+                        // Blue LED breathing animation
+                        for (int breathe = 0; breathe < 10; breathe++) {
+                            for (int brightness = 0; brightness <= 255; brightness += 5) {
+                                lightLEDs(0x00, 0x00, brightness, NUM_LEDS, 1); // Gradually increase brightness
+                                _delay_ms(10); // Delay for smooth animation
+                            }
+                            for (int brightness = 255; brightness >= 0; brightness -= 5) {
+                                lightLEDs(0x00, 0x00, brightness, NUM_LEDS, 1); // Gradually decrease brightness
+                                _delay_ms(10); // Delay for smooth animation
+                            }
+                        }
+                    }
+
+                // Track mode
+                } else {
+                    clearDisplay();
+                    moveCursor(0, 0);
+                    writeString("Race Finished!");
+                    moveCursor(0, 1);
+
+                    moveCursor(0, 1);
+                    char speedString[16];
+                    sprintf(speedString, "Speed: %.2f", playerSpeed);  // Keep 2 decimal places
+                    writeString(speedString);
+
+                    // Green LED breathing animation
+                    for (int breathe = 0; breathe < 10; breathe++) {
+                        for (int brightness = 0; brightness <= 255; brightness += 5) {
+                            lightLEDs(0x00, brightness, 0x00, NUM_LEDS, 1); // Gradually increase brightness
+                            _delay_ms(10); // Delay for smooth animation
+                        }
+                        for (int brightness = 255; brightness >= 0; brightness -= 5) {
+                            lightLEDs(0x00, brightness, 0x00, NUM_LEDS, 1); // Gradually decrease brightness
+                            _delay_ms(10); // Delay for smooth animation
+                        }
+                    }
+                }
+
+                // Reset all variables
                 counter = 0;
-                raceDuration = 0;
                 startTime = 0;
                 raceFinished = false; // Reset raceFinished
                 raceStarted = false; // Reset raceStarted

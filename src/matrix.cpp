@@ -9,37 +9,42 @@
 
 
 uint8_t number3[8] = {
-    0b00111100,
-    0b01000010,
-    0b00000010,
-    0b00011100,
-    0b00000010,
-    0b00000010,
-    0b01000010,
-    0b00111100
+    0b00000000,
+    0b01101110,
+    0b10010001,
+    0b10010001,
+    0b10010001,
+    0b10000010,
+    0b01000100,
+    0b00000000
 };
+
+
 
 uint8_t number2[8] = {
-    0b00111100,
-    0b01000010,
-    0b00000010,
-    0b00000100,
-    0b00001000,
-    0b00010000,
-    0b00100000,
-    0b01111110
+    0b00000000,
+    0b01100001,
+    0b10010001,
+    0b10001001,
+    0b10000101,
+    0b10000011,
+    0b01000001,
+    0b00000000
 };
 
+
+
 uint8_t number1[8] = {
-    0b00001000,
-    0b00011000,
-    0b00101000,
-    0b00001000,
-    0b00001000,
-    0b00001000,
-    0b00001000,
-    0b01111110
+    0b00000001,
+    0b00000001,
+    0b11111111,
+    0b01000001,
+    0b00100001,
+    0b00000001,
+    0b00000001,
+    0b00000000
 };
+    
 
 uint8_t clear[8] = {
     0b00000000,
@@ -96,15 +101,6 @@ void StartCountdown() {
 
 }
 
-/* ---- Deprecated/Old Code (Commented Out) ---- */
 
-// enum stateEnum {wait_press, debounce_press, wait_release, debounce_release};
-// enum stateEnum state = wait_press; // Initialize the state machine
 
-// ISR(PCINT0_vect) {
-//     if (state == wait_press) {
-//         state = debounce_press;
-//     } else if (state == wait_release) {
-//         state = debounce_release;
-//     }
-// }
+

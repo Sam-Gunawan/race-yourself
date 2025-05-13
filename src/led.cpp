@@ -6,9 +6,9 @@
 #include "timer.h"
 
 // Pin connected to DIN of WS2812B
-#define LED_PORT PORTL
-#define LED_DDR  DDRL
-#define LED_PIN  PL6
+#define LED_PORT PORTB
+#define LED_DDR  DDRB
+#define LED_PIN  PB7   
 #define NUM_LEDS 144
 
 void initLED() {

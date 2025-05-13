@@ -81,18 +81,19 @@ void defaultDisplay(bool mode) {
     
     if (!mode) {writeString("Mode: Track");}
     else {writeString("Mode: Ghost");}
+    _delay_ms(10);
 }
 
-void raceFinishedSequence() {
-    clearDisplay();
+// void raceFinishedSequence() {
+//     clearDisplay();
 
-    moveCursor(0, 0);
+//     moveCursor(0, 0);
 
-}
+// }
 
 void standby(bool mode) {
     defaultDisplay(mode);
-    lightLEDs(0xFF, 0xFF, 0x00, NUM_LEDS, 1); // Light up all LEDs in yellow color
+    lightLEDs(0xFF, 0xFF, 0x00, NUM_LEDS, 1);
     delayMs(1);
 }
 
@@ -102,23 +103,19 @@ int main() {
 
     while (1) {
         initLED(); // Reinitialize the LED strip
-        // Serial.print("Racestart: ");
-        // Serial.println(raceStarted);
-        // Serial.print("Racefinish: ");
-        // Serial.println(raceFinished);
-        // Serial.print("isvalid: ");
-        // Serial.println(isValid);
-        // delayMs(100);
-        if (raceStarted == false){raceFinished = false;}
+        initLCD();//try
+        // Serial.print("Racde){raceFinished = false;}
         
 
         if (raceStarted) {
             initLED(); // Reinitialize the LED strip
+            // initLCD(); // Trying
 
             if (raceFinished) {
                 initLED(); // Reinitialize the LED strip
 
-                raceTime = counter/9.17; // Convert to seconds
+                // raceTime = counter/9.17; // Convert to seconds
+                raceTime = counter/39.2; // Convert to seconds
                 playerSpeed = DISTANCE / raceTime; // Calculate the speed m/s
                 
                 Serial.print("Player time: ");
@@ -142,11 +139,14 @@ int main() {
 
                         moveCursor(0, 1);
                         char speedString[16];
-                        sprintf(speedString, "Speed: %.2f", playerSpeed);  // Keep 2 decimal places
-                        writeString(speedString);
+
+                        // CONVERT PLAYERSPEED TO CHAR
+
+                        // sprintf(speedString, "Speed: %.2f", playerSpeed);  // Keep 2 decimal places
+                        // writeString(speedString);
 
                         // Green LED breathing animation
-                        for (int breathe = 0; breathe < 10; breathe++) {
+                        for (int breathe = 0; breathe < 3; breathe++) {
                             for (int brightness = 0; brightness <= 255; brightness += 5) {
                                 lightLEDs(0x00, brightness, 0x00, NUM_LEDS, 1); // Gradually increase brightness
                                 _delay_ms(10); // Delay for smooth animation
@@ -165,16 +165,19 @@ int main() {
 
                         moveCursor(0, 1);
                         char speedString[16];
-                        sprintf(speedString, "Speed: %.2f", playerSpeed);  // Keep 2 decimal places
-                        writeString(speedString);
+
+                        // CONVERT PLAYERSPEED TO CHAR
+
+                        // sprintf(speedString, "Speed: %.2f", playerSpeed);  // Keep 2 decimal places
+                        // writeString(speedString);
 
                         // Blue LED breathing animation
-                        for (int breathe = 0; breathe < 10; breathe++) {
-                            for (int brightness = 0; brightness <= 255; brightness += 5) {
+                        for (int breathe = 0; breathe < 3; breathe++) {
+                            for (int brightness = 100; brightness <= 255; brightness += 5) {
                                 lightLEDs(0x00, 0x00, brightness, NUM_LEDS, 1); // Gradually increase brightness
                                 _delay_ms(10); // Delay for smooth animation
                             }
-                            for (int brightness = 255; brightness >= 0; brightness -= 5) {
+                            for (int brightness = 255; brightness >= 100; brightness -= 5) {
                                 lightLEDs(0x00, 0x00, brightness, NUM_LEDS, 1); // Gradually decrease brightness
                                 _delay_ms(10); // Delay for smooth animation
                             }
@@ -190,16 +193,26 @@ int main() {
 
                     moveCursor(0, 1);
                     char speedString[16];
-                    sprintf(speedString, "Speed: %.2f", playerSpeed);  // Keep 2 decimal places
+                    speedString[0] = 'S';
+                    speedString[1] = 'p';
+                    speedString[2] = 'e';
+                    speedString[3] = 'e';
+                    speedString[4] = 'd';
+                    speedString[5] = ':';
+                    speedString[6] = ' ';
+
+                    // CONVERT PLAYERSPEED TO STRING
+
+                    // sprintf(speedString, "Speed: %.2f", playerSpeed);  // Keep 2 decimal places
                     writeString(speedString);
 
                     // Green LED breathing animation
-                    for (int breathe = 0; breathe < 10; breathe++) {
-                        for (int brightness = 0; brightness <= 255; brightness += 5) {
+                    for (int breathe = 0; breathe < 3; breathe++) {
+                        for (int brightness = 20; brightness <= 255; brightness += 5) {
                             lightLEDs(0x00, brightness, 0x00, NUM_LEDS, 1); // Gradually increase brightness
                             _delay_ms(10); // Delay for smooth animation
                         }
-                        for (int brightness = 255; brightness >= 0; brightness -= 5) {
+                        for (int brightness = 255; brightness >= 20; brightness -= 5) {
                             lightLEDs(0x00, brightness, 0x00, NUM_LEDS, 1); // Gradually decrease brightness
                             _delay_ms(10); // Delay for smooth animation
                         }
@@ -221,9 +234,6 @@ int main() {
 
             if (isValid) {
                 initLED(); // Reinitialize the LED strip
-                startTime = microsSinceStart();
-                Serial.print("startTime: ");
-                Serial.println(startTime);
 
                 Serial.println("measuring distance...");
 
@@ -267,8 +277,8 @@ int main() {
                         Serial.println(delayTime);
 
                         for (int startLED = 1; startLED < NUM_LEDS; startLED++) {
-                            lightLEDs(0xFF, 0x00, 0xFF, 6, startLED);
-                            delayMs(delayTime); // Delay time in ms
+                            lightLEDs(0xFF, 0xFF, 0xFF, 6, startLED);
+                            delayMs(delayTime/10); // Delay time in ms
                         }
 
                         while (!raceFinished) {
@@ -283,7 +293,7 @@ int main() {
                 moveCursor(0, 0);
                 writeString("Race Invalid!");
                 moveCursor(0, 1);
-                if (!ghostTime) {writeString("No ghost saved");} // Player selected ghost mode when no record is saved previously
+                if (!ghostTime && mode) {writeString("No ghost saved");} // Player selected ghost mode when no record is saved previously
                 else {writeString("No player");} // No player detected with IR at starting line
 
                 for (int blink = 0; blink < 5; blink++) {
@@ -306,6 +316,7 @@ int main() {
 
             isValid = true;
         } else {
+            // Serial.println("standby");
             standby(mode);
         }
     }
@@ -399,5 +410,6 @@ ISR(PCINT0_vect) {
 
 // For IR at finish line
 ISR(PCINT2_vect) {
+    Serial.println("fini trig");
     raceFinished = true;
 }

@@ -1,6 +1,6 @@
 #include "infrared.h"
-// #define OUTPUT_PIN1  PK0  // Digital Pin 
-// #define OUTPUT_PIN1  PK1  // Digital Pin 
+// #define OUTPUT_PIN1  PK0  // Digital Pin A8
+// #define OUTPUT_PIN1  PK1  // Digital Pin  A9
 // #define OUTPUT_PIN1  PK2  // Digital Pin 
 
 
@@ -10,7 +10,7 @@ void initIR() {
     
     // Enable PCINTs for PK0, PK1, PK2 (PCINT0, PCINT1, PCINT2)
     PCICR |= (1 << PCIE2); // Enable PCINT[7:0] group (Port A)
-    PCMSK2 |= (1 << PCINT17) | (1 << PCINT18); // Enable specific pins
+    PCMSK2 |= (1 << PCINT18); // Enable specific pins
 
 }
 
